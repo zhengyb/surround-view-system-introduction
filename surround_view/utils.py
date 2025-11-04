@@ -67,6 +67,8 @@ def get_overlap_region_mask(imA, imB):
     Given two images of the save size, get their overlapping region and
     convert this region to a mask array.
     """
+    # IPM映射后的无效图像区域被填充为全黑像素；标定布上的黑色区域通常不是全黑。
+    # 根据这个原理计算重叠区域。标定布上的少数全黑像素(黑洞)会被dilate的膨胀操作填平。
     overlap = cv2.bitwise_and(imA, imB)
     mask = get_mask(overlap)
     mask = cv2.dilate(mask, np.ones((2, 2), np.uint8), iterations=2)

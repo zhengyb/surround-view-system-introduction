@@ -100,13 +100,17 @@ def get_weight_mask_matrix(imA, imB, dist_threshold=5):
     """
     overlapMask = get_overlap_region_mask(imA, imB)
     overlapMaskInv = cv2.bitwise_not(overlapMask)
+    # 重叠区域
     indices = np.where(overlapMask == 255)
 
+    # 抠出各自不与对方重叠的区域。
     imA_diff = cv2.bitwise_and(imA, imA, mask=overlapMaskInv)
     imB_diff = cv2.bitwise_and(imB, imB, mask=overlapMaskInv)
 
+    # 把 A 的二值掩码转成初始权重（A 区域为 1，非 A 为 0）。
     G = get_mask(imA).astype(np.float32) / 255.0
 
+    # 对“非重叠部分”做外轮廓与多边形逼近，得到靠近缝线的一条边界。
     polyA = get_outmost_polygon_boundary(imA_diff)
     polyB = get_outmost_polygon_boundary(imB_diff)
 
@@ -116,6 +120,7 @@ def get_weight_mask_matrix(imA, imB, dist_threshold=5):
         distToB = cv2.pointPolygonTest(polyB, xy_tuple, True)
 
         if distToB < dist_threshold:
+            # 位于靠近imB_diff的过渡带
             distToA = cv2.pointPolygonTest(polyA, xy_tuple, True)
             distToB *= distToB
             distToA *= distToA

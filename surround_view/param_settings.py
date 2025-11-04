@@ -19,11 +19,15 @@ inn_shift_h = 50
 total_w = 600 + 2 * shift_w
 total_h = 1000 + 2 * shift_h
 
+# 四角矩形的宽和长
+checkerboard_w = 180
+checkerboard_h = 200
+
 # four corners of the rectangular region occupied by the car
 # top-left (x_left, y_top), bottom-right (x_right, y_bottom)
-xl = shift_w + 180 + inn_shift_w
+xl = shift_w + checkerboard_w + inn_shift_w
 xr = total_w - xl
-yt = shift_h + 200 + inn_shift_h
+yt = shift_h + checkerboard_h + inn_shift_h
 yb = total_h - yt
 # --------------------------------------------------------------------
 
@@ -34,6 +38,7 @@ project_shapes = {
     "right": (total_h, xl)
 }
 
+# TODO: 投影矩阵需要根据标定布的图形修改,4个角点连成的区域越大越好；可以通过自动识别角点寻找对应的投影像素点坐标；
 # pixel locations of the four points to be chosen.
 # you must click these pixels in the same order when running
 # the get_projection_map.py script
